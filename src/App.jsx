@@ -19,14 +19,11 @@ function App() {
       complete: (results) => {
         setTable(results.data);
 
-        // console.log(results.data);
-
         let data = {};
         setTable(results.data);
         for (let j in results.data[0]) {
           setTableHeadRow((prev) => [...prev, j]);
-          // console.log("value of j: ", j);
-          data[j] = [];
+          data[j] = ["---blank---"];
         }
 
         for (let i = 1; i < results.data.length; i++) {
@@ -65,16 +62,19 @@ function App() {
   return (
     <div className="App">
       <Filter
+        title={"select city"}
         table={tableData["City"]}
         inputValue={city}
         setInputValue={setCity}
       />
       <Filter
+        title={"select entity type"}
         table={tableData["Entity Type"]}
         inputValue={entity}
         setInputValue={setEntity}
       />
       <Filter
+        title={"select site name"}
         table={tableData["Site Name"]}
         inputValue={site}
         setInputValue={setSite}
