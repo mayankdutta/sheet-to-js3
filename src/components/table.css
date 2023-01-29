@@ -1,3 +1,6 @@
+main {
+  padding: 0 2rem 0 2rem;
+}
 
 .row {
   border: 2px solid black;
@@ -19,7 +22,6 @@ a,
 .column1 {
   border-right: 2px solid black;
 }
-
 
 .title {
   margin: 4px 0px;

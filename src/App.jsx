@@ -3,6 +3,7 @@ import Papa from "papaparse";
 import { useEffect, useState } from "react";
 import Filter from "./components/filter";
 import Display from "./components/display";
+import { useForm } from "react-hook-form";
 
 const URL =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vR7p91mdEj3E7UcmAjwFpcE1evDLh6T5J1IWMJ1TR0tSV7Tyue4m0CKLj84R3PcbgMz6d-Krmziszj_/pub?gid=0&single=true&output=csv";
@@ -11,6 +12,20 @@ function App() {
   const [table, setTable] = useState([]);
   const [tableHeadRow, setTableHeadRow] = useState([]);
   const [tableData, setTableData] = useState({});
+
+  const [city, setCity] = useState();
+  const [entity, setEntity] = useState();
+  const [site, setSite] = useState();
+
+  const [login, setLogin] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm();
+  const onSubmit = (data) =>
+    setLogin(data.username === "root" && data.password === "12345");
 
   useEffect(() => {
     Papa.parse(URL, {
@@ -31,7 +46,6 @@ function App() {
             data[j].push(results.data[i][j]);
           }
         }
-        console.log("data: ");
         setTableData(data);
       },
     });
@@ -55,38 +69,61 @@ function App() {
       filteredValue[2]
     );
 
-  const [city, setCity] = useState();
-  const [entity, setEntity] = useState();
-  const [site, setSite] = useState();
-
   return (
     <div className="App">
-      <Filter
-        title={"select city"}
-        table={tableData["City"]}
-        inputValue={city}
-        setInputValue={setCity}
-      />
-      <Filter
-        title={"select entity type"}
-        table={tableData["Entity Type"]}
-        inputValue={entity}
-        setInputValue={setEntity}
-      />
-      <Filter
-        title={"select site name"}
-        table={tableData["Site Name"]}
-        inputValue={site}
-        setInputValue={setSite}
-      />
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <input
+          placeholder="username"
+          type="text"
+          {...register("username", { required: true })}
+        />
+        {errors.username && <p style={{ color: "red" }}>*username required</p>}
 
-      {getOptions(
-        table,
-        ["City", "Entity Type", "Site Name"],
-        [city, entity, site]
-      ).map((options, i) => (
-        <Display key={i} options={options} tableHeadRow={tableHeadRow} i={i} />
-      ))}
+        <input
+          placeholder="password"
+          type="password"
+          {...register("password", { required: true })}
+        />
+
+        {errors.password && <p style={{ color: "red" }}>*password required</p>}
+        <input type="submit" />
+      </form>
+
+      {login && (
+        <>
+          <Filter
+            title={"select city"}
+            table={tableData["City"]}
+            inputValue={city}
+            setInputValue={setCity}
+          />
+          <Filter
+            title={"select entity type"}
+            table={tableData["Entity Type"]}
+            inputValue={entity}
+            setInputValue={setEntity}
+          />
+          <Filter
+            title={"select site name"}
+            table={tableData["Site Name"]}
+            inputValue={site}
+            setInputValue={setSite}
+          />
+
+          {getOptions(
+            table,
+            ["City", "Entity Type", "Site Name"],
+            [city, entity, site]
+          ).map((options, i) => (
+            <Display
+              key={i}
+              options={options}
+              tableHeadRow={tableHeadRow}
+              i={i}
+            />
+          ))}
+        </>
+      )}
     </div>
   );
 }

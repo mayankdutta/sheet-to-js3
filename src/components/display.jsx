@@ -3,8 +3,6 @@ import Table from "./table";
 const Display = ({ tableHeadRow, options, i }) => {
   return (
     <>
-      <h1> Entry : {i + 1} </h1>
-
       {Object.values(options).map((data, j) => (
         <Table
           key={data + i + j}
